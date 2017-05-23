@@ -22,6 +22,8 @@ public class AlbumSearchPresenter {
     public static final String URL_PATH = "v1/search";
     private static final String Q = "q";
     private static final String TYPE_ALBUM = "album";
+    private static final String LIMIT = "limit";
+    private static final String ITEMS_PER_PAGE = "10";
     private static final String TYPE = "type";
 
     @VisibleForTesting
@@ -52,6 +54,7 @@ public class AlbumSearchPresenter {
         Map<String, String> map = new HashMap<>();
         map.put(Q, searchTerm);
         map.put(TYPE, TYPE_ALBUM);
+        map.put(LIMIT, ITEMS_PER_PAGE);
         Call<AlbumResponse> call = redditRequest.getAlbumSearchResult(map);
 
         call.enqueue(new DataLoaderCallback(this));
