@@ -6,4 +6,6 @@ import java.util.List;
 
 interface AlbumSearchView {
     void showResult(List<Album> albumList);
+    void showProgressView();
+    void hideProgressView();
 }

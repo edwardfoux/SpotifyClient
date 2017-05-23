@@ -25,4 +25,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <FrameLayout
+        android:id="@+id/progress_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/edit_text"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_gravity="top|center"
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
+    </FrameLayout>
+
 </RelativeLayout>

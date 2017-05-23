@@ -29,6 +29,7 @@ public class AlbumSearchActivity extends AppCompatActivity implements AlbumSearc
     private EditText editText;
     private AlbumSearchPresenter albumSearchPresenter;
     private AlbumSearchAdapter albumSearchAdapter;
+    private View progressView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class AlbumSearchActivity extends AppCompatActivity implements AlbumSearc
         setContentView(R.layout.album_search_activtiy);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         editText = (EditText) findViewById(R.id.edit_text);
+        progressView = findViewById(R.id.progress_view);
 
         albumSearchAdapter = new AlbumSearchAdapter(new ItemCLickListener());
         albumSearchPresenter = new AlbumSearchPresenter(this);
@@ -60,7 +62,10 @@ public class AlbumSearchActivity extends AppCompatActivity implements AlbumSearc
             }
         });
 
-        albumSearchPresenter.onCreateCalled(savedInstanceState);
+        if (savedInstanceState != null) {
+            Albums albums = savedInstanceState.getParcelable(AlbumSearchActivity.DATA);
+            albumSearchPresenter.onCreateCalled(albums);
+        }
     }
 
     /**
@@ -81,6 +86,16 @@ public class AlbumSearchActivity extends AppCompatActivity implements AlbumSearc
         albumSearchAdapter.setList(albumList);
         albumSearchAdapter.notifyDataSetChanged();
         hideKeyboardFrom(editText);
+    }
+
+    @Override
+    public void showProgressView() {
+        progressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressView() {
+        progressView.setVisibility(View.GONE);
     }
 
     private void hideKeyboardFrom(View view) {

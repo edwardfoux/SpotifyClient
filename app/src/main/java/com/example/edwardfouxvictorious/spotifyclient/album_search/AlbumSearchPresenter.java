@@ -1,7 +1,7 @@
 package com.example.edwardfouxvictorious.spotifyclient.album_search;
 
 
-import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 
 import com.example.edwardfouxvictorious.spotifyclient.model.AlbumResponse;
 import com.example.edwardfouxvictorious.spotifyclient.model.Albums;
@@ -24,21 +24,20 @@ public class AlbumSearchPresenter {
     private static final String TYPE_ALBUM = "album";
     private static final String TYPE = "type";
 
-    private AlbumSearchView albumSearchView;
+    @VisibleForTesting
+    AlbumSearchView albumSearchView;
 
     AlbumSearchPresenter(AlbumSearchView albumSearchView) {
         this.albumSearchView = albumSearchView;
     }
 
-    public void onCreateCalled(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            Albums albums = savedInstanceState.getParcelable(AlbumSearchActivity.DATA);
-            albumSearchView.showResult(albums.getItems());
-        }
+    void onCreateCalled(Albums albums) {
+        processResponse(albums);
     }
 
     void provideSearchResults(String searchTerm) {
         if (searchTerm == null || searchTerm.length() == 0) return;
+        albumSearchView.showProgressView();
         getData(searchTerm);
     }
 
@@ -58,14 +57,17 @@ public class AlbumSearchPresenter {
         call.enqueue(new DataLoaderCallback(this));
     }
 
-    private void processResponse(AlbumResponse albumResponse) {
-        albumSearchView.showResult(albumResponse.getAlbums().getItems());
+    private void processResponse(Albums albums) {
+        albumSearchView.hideProgressView();
+        albumSearchView.showResult(albums.getItems());
     }
 
-    private class DataLoaderCallback extends ApiCallback<AlbumResponse> {
+    @VisibleForTesting
+    static class DataLoaderCallback extends ApiCallback<AlbumResponse> {
         WeakReference<AlbumSearchPresenter> ref;
 
-        private DataLoaderCallback(AlbumSearchPresenter presenter) {
+        @VisibleForTesting
+        DataLoaderCallback(AlbumSearchPresenter presenter) {
             this.ref = new WeakReference<>(presenter);
         }
 
@@ -74,7 +76,7 @@ public class AlbumSearchPresenter {
             AlbumSearchPresenter albumSearchPresenter = ref.get();
             if (albumSearchPresenter == null) return;
 
-            albumSearchPresenter.processResponse(response);
+            albumSearchPresenter.processResponse(response.getAlbums());
         }
     }
 }
